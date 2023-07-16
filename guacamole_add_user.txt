@@ -1,0 +1,15 @@
+use guacamole;
+DROP PROCEDURE IF EXISTS guacamole.loop_entity;
+create procedure guacamole.loop_entity(startID int, endID int, Name varchar(256))
+BEGIN
+    WHILE (startID < endID)
+        DO
+            BEGIN
+                insert into guacamole.guacamole_entity (entity_id, name, type)
+                values (startID, Name, 'USER');
+            END;
+            SET startID = startID + 1;
+        END WHILE;
+END;
+
+CALL guacamole.loop_entity(28, 40, 'tuan');

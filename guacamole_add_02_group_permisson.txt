@@ -1,0 +1,90 @@
+DROP PROCEDURE IF EXISTS guacamole.give_02_group_permission;
+CREATE PROCEDURE give_02_group_permission(entity_ID int, group_name1 varchar(100),
+                                      group_name2 varchar(100), Permission varchar(256))
+BEGIN
+    DECLARE count int;
+    DECLARE start int DEFAULT 0;
+    DECLARE start_connection_group_id_01 int;
+    DECLARE start_connection_group_id_02 int;
+    DECLARE count_child_id_1 int;
+    DECLARE count_child_id_2 int;
+    DECLARE start_record_01 int default 0;
+    DECLARE start_record_02 int default 0;
+    DECLARE connection_group_id_value int DEFAULT 0;
+#     DECLARE entity_ID int DEFAULT 0;
+#     SET GLOBAL FOREIGN_KEY_CHECKS = 0;
+#
+#     SET entity_ID = (SELECT entity_id
+#                      from guacamole.guacamole_entity
+#                      WHERE guacamole.guacamole_entity.name
+#                                LIKE userName
+#                      LIMIT 1);
+
+    SET count = (SELECT count(G.connection_group_id)
+                 FROM guacamole.guacamole_connection_group G
+                 WHERE LOWER(G.connection_group_name) LIKE
+                       LOWER(group_name1)
+                    OR LOWER(G.connection_group_name) LIKE
+                       LOWER(group_name2));
+
+    WHILE start < count
+        DO
+            SET connection_group_id_value = (SELECT G.connection_group_id
+                                             FROM guacamole.guacamole_connection_group G
+                                             WHERE LOWER(G.connection_group_name) LIKE
+                                                   LOWER(group_name1)
+                                                OR LOWER(G.connection_group_name) LIKE
+                                                   LOWER(group_name2)
+                                             LIMIT start,1);
+            INSERT INTO guacamole.guacamole_connection_group_permission
+                (entity_id, connection_group_id, permission)
+            VALUES (entity_ID, connection_group_id_value, Permission);
+            SET connection_group_id_value = 0;
+            SET start = start + 1;
+        END WHILE;
+
+    SET start_connection_group_id_01 = (SELECT C.connection_id
+                                        FROM guacamole.guacamole_connection C
+                                                 JOIN guacamole.guacamole_connection_group G
+                                                      ON G.connection_group_id = C.parent_id
+                                        WHERE LOWER(G.connection_group_name) LIKE
+                                              LOWER(group_name1)
+                                        LIMIT start_record_01,1);
+    SET start_connection_group_id_02 = (SELECT C.connection_id
+                                        FROM guacamole.guacamole_connection C
+                                                 JOIN guacamole.guacamole_connection_group G
+                                                      ON G.connection_group_id = C.parent_id
+                                        WHERE LOWER(G.connection_group_name) LIKE
+                                              LOWER(group_name2)
+                                        LIMIT start_record_02,1);
+    SET count_child_id_1 = (SELECT count(C.connection_id)
+                            FROM guacamole.guacamole_connection C
+                                     JOIN guacamole.guacamole_connection_group G
+                                          ON G.connection_group_id = C.parent_id
+                            WHERE LOWER(G.connection_group_name) LIKE
+                                  LOWER(group_name1));
+    SET count_child_id_2 = (SELECT count(C.connection_id)
+                            FROM guacamole.guacamole_connection C
+                                     JOIN guacamole.guacamole_connection_group G
+                                          ON G.connection_group_id = C.parent_id
+                            WHERE LOWER(G.connection_group_name) LIKE
+                                  LOWER(group_name2));
+
+    WHILE (start_record_01 <= count_child_id_1)
+        DO
+            INSERT INTO guacamole.guacamole_connection_permission (entity_id, connection_id, permission)
+            VALUES (entity_ID, start_connection_group_id_01, Permission);
+            SET start_connection_group_id_01 = start_connection_group_id_01 + 1;
+            SET start_record_01 = start_record_01 + 1;
+        END WHILE;
+
+    WHILE (start_record_02 <= count_child_id_2)
+        DO
+            INSERT INTO guacamole.guacamole_connection_permission (entity_id, connection_id, permission)
+            VALUES (entity_ID, start_connection_group_id_02, Permission);
+            SET start_record_02 = start_record_02 + 1;
+            SET start_connection_group_id_02 = start_connection_group_id_02 + 1;
+        END WHILE;
+END;
+
+CALL give_02_group_permission(5, '%st.paul%', '%đại học y%', 'READ');
