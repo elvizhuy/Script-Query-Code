@@ -1,0 +1,44 @@
+RouteServiceProvider.php,
+protected function configureRateLimiting()
+{
+RateLimiter::for('api', function (Request $request) {
+return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+});
+
+    RateLimiter::for('seventy', function () {
+        return Limit::perMinute(70);          //You can change this number to avoid 429 error.
+    });
+}
+
+
+Yes, logging can be done on the client. Look in the headers of the response. It should look something like this:
+
+DK@DK:~$ curl -I -X POST http://localhost/fake/path
+HTTP/1.1 400 Bad Request
+Date: Tue, 01 Oct 2019 20:29:45 GMT
+Server: Apache/2.4.39 (Fedora) OpenSSL/1.1.1b
+X-Powered-By: PHP/7.2.19
+Cache-Control: no-cache, private
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 59
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/json
+You're looking for X-RateLimit-Limit and X-RateLimit-Remaining
+
+The issue I was having was in the Kernel. Inside of $middlewareGroups under api, 'throttle:120,1' was not being respected. As seen in the headers above, it was always set to 60. Here's what I needed to do to fix it:
+
+/* ... */
+
+protected $middlewareGroups = [
+    'web' => [
+        /* .. */
+    ],
+
+    'throttle' => ['throttle:99,1'], //No idea why, but this works!
+
+    'api' => [
+        'throttle:5000,1', //These values did not change the throttle limit.
+        'bindings',
+    ],
+];
