@@ -1,0 +1,52 @@
+services:
+  guacamole-mysql:
+      image: mysql:8.0.33-debian
+      container_name: gua-mysql-isofh
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        # - /root/config/mysqld.cnf:/etc/mysql/conf.d/mysqld.cnf
+        - /root/guacamole-data/guacamole-mysql-data:/var/lib/mysql
+        - /root/guacamole-data/initdb.d/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+      command:
+        - "--character-set-server=utf8"
+        - "--collation-server=utf8_bin"
+      restart: always
+      environment:
+        - MYSQL_ROOT_PASSWORD=2477bb2991dd472094d118ad9bafa0ce
+        - MYSQL_DATABASE=guacamole
+        - MYSQL_USER=guacamole
+        - MYSQL_PASSWORD=fea78183e72c4e7798e1d803e2d36109
+      expose:
+        - "3306"
+      networks:
+        guacamole_network:
+
+  guacamole-guacd:
+    image: guacamole/guacd:1.5.2
+    container_name: guacd-isofh
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /root/guacamole-data/recordings:/var/lib/guacamole/recordings
+    restart: always
+    expose:
+        - "4822"
+    networks:
+      guacamole_network:
+
+  guacamole-web:
+    image: guacamole/guacamole:1.5.2
+    container_name: guac-web-isofh
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /root/guacamole-data/recordings:/var/lib/guacamole/recordings
+      - /root/guacamole-data/extensions:/etc/guacamole/extensions:rw
+    restart: always
+    environment:
+      - GUACD_HOSTNAME=guacamole-guacd
+      - GUACD_PORT=4822
+      - EXTENSION_PRIORITY=mysql
+      - MYSQL_HOSTNAME=guacamole-mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=guacamole
+      - MYSQL_USER=guacamole
+      - MYSQL_PASSWORD=fea78183e72c4e7798e1d803e2d36109

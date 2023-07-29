@@ -1,0 +1,61 @@
+global:
+  telegram_bot_token: bot5765051913:AAEXYcQKE0h8FTiC8Ba0DgNutliSMBbXAjw
+  telegram_chat_id: -932865047
+  smtp_smarthost: 'smtp.gmail.com:465'
+  smtp_from: 'elvizhuy@gmail.com'
+  smtp_auth_username: 'elvizhuy@gmail.com'
+  smtp_auth_password: 'ubzhttigeouibvls'
+  smtp_require_tls: true
+  resolve_timeout: 1m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'telegram-notifications'
+  receiver: 'email-notifications'
+
+receivers:
+- name: 'telegram-notifications'
+  telegram_configs:
+  - api_url: https://api.telegram.org
+  - message: 'Alert: {{.AlertName}} ({{.Severity}})'
+    parse_mode: ''
+
+receivers:
+- name: 'email-notifications'
+  email_configs:
+  - to: 'jeremynguyen1990@gmail.com'
+    from: 'elvizhuy@gmail.com'
+    smarthost: smtp.gmail.com:465
+    auth_username: 'elvizhuy@gmail.com'
+    auth_identity: 'elvizhuy@gmail.com'
+    auth_password: 'ubzhttigeouibvls'
+
+-------------------------------------------
+
+global:
+  resolve_timeout: 1m
+receivers:
+- name: default-telegram
+  telegram_configs:
+  - api_url: https://api.telegram.org
+    bot_token: 5765051913:AAEXYcQKE0h8FTiC8Ba0DgNutliSMBbXAjw
+    chat_id: -932865047
+    disable_notifications: false
+    http_config:
+      follow_redirects: true
+    send_resolved: true
+    parse_mode: ""
+route:
+  continue: false
+  group_by:
+  - job
+  group_interval: 1m
+  group_wait: 30s
+  receiver: default-telegram
+  repeat_interval: 1h
+  routes:
+  - receiver: default-telegram
+templates:
+- /etc/alertmanager/config/*.tmpl
