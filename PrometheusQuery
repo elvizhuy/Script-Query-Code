@@ -1,3 +1,7 @@
 100 - avg(irate(container_cpu_usage_seconds_total{instance="10.0.0.55:11092",name="kafka-isofh",mode="idle"}[1m])) * 100
 
 100 * (1 - rate(container_cpu_usage_seconds_total{name="kafka-isofh"}[5m]))
+
+sum(container_memory_working_set_bytes{job="isofhlocal",name="golang-app"}) / sum(container_spec_memory_limit_bytes{id="/",instance="10.0.0.55:19093",job="isofhlocal"}) * 100 > 90  ( TÍNH RAM CONTAINER )
+
+(sum by (instance, name) (rate(container_cpu_usage_seconds_total{job="isofhlocal",name!="",name="searching-service"}[1m])) * 100) ( TÍNH % CPU CONTAINER )
