@@ -9,3 +9,53 @@ sum(container_memory_working_set_bytes{job="isofhlocal",name="golang-app"}) / su
 irate(node_disk_reads_merged_total{job="Saint-Paul",instance="10.0.30.61:9100"}[1m]) > 100 (High Disk Reads Merged Rate)
 
 irate(node_disk_writes_merged_total{job="Mediplus",instance="10.0.0.55:9100"}[1m]) > 100 (High Disk Writes Merged Rate)
+
+
+node_disk_reads_completed_total (field 1)
+    This is the total number of reads completed successfully.
+node_disk_reads_merged_total (field 2)
+node_disk_writes_merged_total (field 6)
+node_disk_discards_merged_total (field 13)
+    Reads and writes which are adjacent to each other may be merged
+    for efficiency.  Thus two 4K reads may become one 8K read before
+    it is ultimately handed to the disk, and so it will be counted
+    (and queued) as only one I/O.  This field lets you know how
+    often this was done.
+node_disk_read_bytes_total (field 3)
+    This is the total number of bytes read successfully.
+node_disk_read_time_seconds_total (field 4)
+    This is the total number of seconds spent by all reads (as
+    measured from __make_request() to end_that_request_last()).
+node_disk_writes_completed_total (field 5)
+    This is the total number of writes completed successfully.
+node_disk_written_bytes_total (field 7)
+    This is the total number of bytes written successfully.
+node_disk_write_time_seconds_total (field 8)
+    This is the total number of seconds spent by all writes (as
+    measured from __make_request() to end_that_request_last()).
+node_disk_io_now (field 9)
+    The only field that should go to zero. Incremented as requests
+    are given to appropriate struct request_queue and decremented as
+    they finish.
+node_disk_io_time_seconds_total (field 10)
+    Number of seconds spent doing I/Os.
+    This field increases so long as field 9 is nonzero.
+node_disk_io_time_weighted_seconds_total (field 11)
+    Weighted # of seconds spent doing I/Os.
+    This field is incremented at each I/O start, I/O completion, I/O
+    merge, or read of these stats by the number of I/Os in progress
+    (field 9) times the number of seconds spent doing I/O since the
+    last update of this field.  This can provide an easy measure of
+    both I/O completion time and the backlog that may be
+    accumulating.
+node_disk_discards_completed_total (field 12)
+    This is the total number of discards completed successfully.
+node_disk_discarded_sectors_total (field 14)
+    This is the total number of sectors discarded successfully.
+node_disk_discard_time_seconds_total (field 15)
+    This is the total number of seconds spent by all discards (as
+    measured from __make_request() to end_that_request_last()).
+node_disk_flush_requests_total (field 16)
+    The total number of flush requests completed successfully.
+node_disk_flush_requests_time_seconds_total (field 17)
+    The total number of seconds spent by all flush requests.
