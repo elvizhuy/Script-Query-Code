@@ -1,0 +1,78 @@
+pipeline {
+    agent any
+    environment {
+        def username = 'isofh'
+        def serverWhereToRunImage = '10.0.0.55'
+        def dirWhereImageLocated = '/var/lib/jenkins/jobs/GolangCICD-Script/workspace'
+        def pathInServerWhereToRunImage = '/home/isofh/golang-app-funny'
+        def container_app = 'golang-app'
+        def portForGoApp = '7000'
+    }
+    parameters {
+        choice(name: 'Chọn branch triển khai', choices: ['develop', 'production'], description: 'Triển khai vào server nào')
+    }
+    stages {
+        stage('GIT SCM code') {
+            steps {
+                script {
+                    if (params.'Chọn branch triển khai' == 'develop') {
+                        git branch: 'main', url: 'https://github.com/bachdangtuan/GolangWebApplication.git'
+                    } else if (params.'Chọn branch triển khai' == 'production') {
+                         echo "vãi loz thế nhỉ"
+                    }
+                }
+            }
+        }
+        stage('Kế hoạch Triển Khai'){
+            steps {
+                script {
+                    def branch = params.'Chọn branch triển khai'
+                    echo "Bạn đã chọn tool triển khai: ${branch}"
+                    echo "------Tiến hành build project Golang-Appp trên docker----"
+                    env.BRANCH_TO_DEPLOY = branch
+                }
+            }
+        }
+        stage('Xây Dựng Images'){
+            steps {
+                script {
+                    echo "========= Tiến hành xây dựng Images ========="
+                    echo "Giá trị biến môi trường BRANCH_TO_DEPLOY là: ${env.BRANCH_TO_DEPLOY}"
+                    // sh "docker rmi golang-app_${env.BRANCH_TO_DEPLOY}"
+                    sh "ls -la &&  docker image build . -t golang-app_${env.BRANCH_TO_DEPLOY} "
+                    echo "========= Hoàn thành xây dựng images ========="
+                    echo "========= Save Image Golang-App ========="
+                    sh "docker save -o golang-app_${env.BRANCH_TO_DEPLOY}.tar golang-app_${env.BRANCH_TO_DEPLOY}"
+                    echo "Done !"
+                }
+            }
+        }
+        stage('Copy Images tới Server'){
+            steps {
+                script {
+                    echo "========== Copying Images =========="
+                    sh "pwd"
+                    sh "scp golang-app_${env.BRANCH_TO_DEPLOY}.tar ${username}@${serverWhereToRunImage}:${pathInServerWhereToRunImage}"
+                    echo "========== Copy DONE! ==========="
+                }
+            }
+        }
+        stage('Run app on Server') {
+            steps {
+                script {
+                    echo "SSH vào server dev"
+                    sh "ssh ${username}@${serverWhereToRunImage} 'docker stop ${container_app} && docker rm ${container_app} && docker rmi golang-app_${env.BRANCH_TO_DEPLOY} &&   docker load -i /home/isofh/golang-app-funny/golang-app_${env.BRANCH_TO_DEPLOY}.tar && docker run -p ${portForGoApp}:${portForGoApp} -d --name $container_app golang-app_${env.BRANCH_TO_DEPLOY}'"
+
+                    // sh "ssh ${username}@${serverWhereToRunImage} 'docker run -p ${portForGoApp}:${portForGoApp} -d --name $container_app golang-app_$ENVIRONMENT'"
+    
+                }
+            }
+        }
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
+    }
+}
