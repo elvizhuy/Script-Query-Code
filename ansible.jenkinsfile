@@ -25,7 +25,7 @@ pipeline {
                             sh "cd ${HuyGithubDir} && git pull"
 
                             echo "------------ RUN PLAYBOOK ------------"
-                            sh "cd${HuyGithubDir} && ansible-playbook -i ${Inventory} ${createDirectoryPlaybook}"
+                            sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${createDirectoryPlaybook}"
                             echo "------------ FINISH ------------"
                         } 
                     }
