@@ -7,11 +7,12 @@ pipeline {
         def HuyGithubDir = "Ansible-Inventory-Playbook"
         def Inventory = "hosts.yml"
         def createDirectoryPlaybook = "create-directory.yml"
+        def changePassworPlaybook = "change-password.yml"
         def gitrepo = "https://github.com/elvizhuy/${HuyGithubDir}.git"
     }
 
     parameters {
-        choice(choices: ["create directory"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
+        choice(choices: ["create directory","change password"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
     }
 
     stages {
