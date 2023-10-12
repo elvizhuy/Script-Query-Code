@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        def username = "isofh"
+        def HuyGithubDir = "Ansible-Inventory-Playbook"
+        def Inventory = "/etc/ansible/hosts"
+        def createDirectoryPlaybook = "create-directory.yml"
+        def gitrepo = "https://github.com/elvizhuy/${HuyGithubDir}.git"
+    }
+
+    parameters {
+        choice(choices: ["${createDirectoryPlaybook}"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
+    }
+
+    stages {
+        stage('Run Playbook') {
+              when { expression { params.choosePlaybook }}
+              steps {
+                    script {
+                        if (params.choosePlaybook == "create-directory.yml") {
+                            sh "cd /home/isofh/${HuyGithubDir} && git pull && ansible-playbook -i ${Inventory} ${params.choosePlaybook}"
+                            // echo "-------- SSH to server ---------"
+                            // sh """ssh ${username}@${HuyPrometheus} 'sudo rm -rf ${HuyGithubDir} && git clone ${gitrepo}'"""
+                            // echo "----------- End ------------"
+
+                            // echo "-------- SSH to server ---------"
+                            // sh """ssh ${username}@${HuyPrometheus} 'cd /home/isofh/${HuyGithubDir} && bash docker-script.sh'"""
+                            // sh """ssh ${username}@${HuyPrometheus} 'cd /home/isofh/${HuyGithubDir}/prometheus && sudo rm -rf rules'"""
+                            // echo "----------- End ------------"
+
+                        } 
+                        // else if (params.DeploymentIP == "10.0.0.232-TuanSerzver") {
+                        //     sh """ssh ${username}@${TuanPrometheus} 'cd /home/isofh/Docker-compose-prometheus  && sudo git checkout main && sudo git branch && sudo git pull && docker container restart \$(docker container ls -aq --filter name=sys-isofh)'"""
+                        // } else if (params.DeploymentIP == "Production-Prometheus") {
+                        //     sh "ssh ${username}@${ProductionServer} 'cd /home/isofh/Docker-compose-prometheus && git checkout production && sudo git pull && sudo docker restart sys-isofh-prometheus sys-isofh-alertmanager '"
+                        // } else if (params.DeploymentIP == "Production-Prometheus-Container") {
+                        //     sh "ssh ${username}@${ProductionServerContainer} 'cd /home/isofh/Docker-compose-prometheus && git checkout production-container && sudo git pull && sudo docker restart sys-isofh-vipbot-container sys-isofh-prometheus sys-isofh-alertmanager '"
+                        // }
+                    }
+
+              }
+        }
+    }
+}
