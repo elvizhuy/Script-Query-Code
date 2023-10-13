@@ -3,16 +3,16 @@ pipeline {
 
     environment {
         def username = "isofh"
-        def ip = "10.0.0.131"
         def HuyGithubDir = "Ansible-Inventory-Playbook"
         def Inventory = "hosts.yml"
         def createDirectoryPlaybook = "create-directory.yml"
         def changePassworPlaybook = "change-password.yml"
+        def deployWebAppPlaybook = "deploy-webapp.yml"
         def gitrepo = "https://github.com/elvizhuy/${HuyGithubDir}.git"
     }
 
     parameters {
-        choice(choices: ["create directory","change password"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
+        choice(choices: ["create directory","change password","deploy webapp"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
     }
 
     stages {
@@ -22,22 +22,24 @@ pipeline {
                     script {
                         echo "------------ PULL CODE ------------"
                         sh "cd ${HuyGithubDir} && git pull"
+                        echo "------------ RUN PLAYBOOK ------------"
                         if (params.choosePlaybook == "create directory") {
-                            echo "------------ RUN PLAYBOOK ------------"
                             sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${createDirectoryPlaybook}"
-                            echo "------------ FINISH ------------"
                         } 
                         else if (params.choosePlaybook == "change password"){
-                            echo "------------ RUN PLAYBOOK ------------"
                             sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${changePassworPlaybook}"
-                            echo "------------ FINISH ------------"
                         }
+                         else if (params.choosePlaybook == "deploy webapp"){
+                            sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${deployWebAppPlaybook}"
+                        }
+                        echo "------------ FINISH ------------"
                     }
 
               }
         }
     }
 }
+
 
 
 root:$y$j9T$mKPLw6YAhEvE2GyLKQdYz1$yKNkNMSQZodk1uUpp/cL9HuTOac9CzCU55OuCeWVv.C:19637:0:99999:7:::
