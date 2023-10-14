@@ -19,13 +19,22 @@ pipeline {
     }
 
     stages {
-        stage ('Clone project') {
+        stage ('Clone or pull project') {
             steps {
                  script {
-                    echo "------------ PULL CODE ------------"
-                    // sh "git clone ${gitrepo}"
-                    sh "cd ${HuyGithubDir} && git pull"
-
+                    echo "------------ CLONE OR PULL CODE ------------"
+                    def workspace = pwd() 
+                    def gitDir = "${workspace}/${HuyGithubDir}/.git"
+                    
+                    if (fileExists(gitDir)) {
+                        echo "Git repository exists. Pulling changes..."
+                        echo "------------ PULL CODE ------------"
+                        sh "cd ${workspace}/${HuyGithubDir} && git pull"
+                    } else {
+                        echo "------------ CLONE PROJECT ------------"
+                        echo "Git repository does not exist. Cloning..."
+                        sh "git clone ${gitrepo}"
+                    }
                 }
             }
         }
