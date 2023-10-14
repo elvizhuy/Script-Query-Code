@@ -23,7 +23,9 @@ pipeline {
             steps {
                  script {
                     echo "------------ PULL CODE ------------"
-                    sh "git clone ${gitrepo}"
+                    // sh "git clone ${gitrepo}"
+                    sh "cd ${HuyGithubDir} && git pull"
+
                 }
             }
         }
@@ -57,7 +59,7 @@ pipeline {
         stage ('Clean Workspace') {
             steps {
                  script {
-                    sh "rm -rf ${workspacePath}/${HuyGithubDir}"
+                    // sh "rm -rf ${workspacePath}/${HuyGithubDir}"
                     cleanWs()
                 }
             }
