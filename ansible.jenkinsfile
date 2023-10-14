@@ -11,6 +11,7 @@ pipeline {
         def installMysqlPlaybook = "install-mysql.yml"
         def installPostgresqlPlaybook = "install-postgresql.yml"
         def gitrepo = "https://github.com/elvizhuy/${HuyGithubDir}.git"
+        def workspacePath = "/var/lib/jenkins/workspace"
     }
 
     parameters {
@@ -18,12 +19,20 @@ pipeline {
     }
 
     stages {
-        stage('Run Playbook') {
+        stage ('Clone project') {
+            steps {
+                 script {
+                    echo "------------ PULL CODE ------------"
+                    sh "git clone ${gitrepo}"
+                }
+            }
+        }
+
+        stage ('Run Playbook') {
               when { expression { params.choosePlaybook }}
               steps {
                     script {
-                        echo "------------ PULL CODE ------------"
-                        sh "cd ${HuyGithubDir} && git pull"
+                        
                         echo "------------ RUN PLAYBOOK ------------"
                         if (params.choosePlaybook == "create directory") {
                             sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${createDirectoryPlaybook}"
@@ -42,8 +51,16 @@ pipeline {
                         }
                         echo "------------ FINISH ------------"
                     }
-
               }
+        }
+
+        stage ('Clean Workspace') {
+            steps {
+                 script {
+                    sh "rm -rf ${workspacePath}/${HuyGithubDir}"
+                    cleanWs()
+                }
+            }
         }
     }
 }
