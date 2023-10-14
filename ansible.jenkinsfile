@@ -8,11 +8,13 @@ pipeline {
         def createDirectoryPlaybook = "create-directory.yml"
         def changePassworPlaybook = "change-password.yml"
         def deployWebAppPlaybook = "deploy-webapp.yml"
+        def installMysqlPlaybook = "install-mysql.yml"
+        def installPostgresqlPlaybook = "install-postgresql.yml"
         def gitrepo = "https://github.com/elvizhuy/${HuyGithubDir}.git"
     }
 
     parameters {
-        choice(choices: ["create directory","change password","deploy webapp"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
+        choice(choices: ["create directory","change password","deploy webapp","install mysql","install postgresql"], description: 'Choose Playbook To Run', name: 'choosePlaybook')
     }
 
     stages {
@@ -31,6 +33,12 @@ pipeline {
                         }
                          else if (params.choosePlaybook == "deploy webapp"){
                             sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${deployWebAppPlaybook}"
+                        }
+                        else if (params.choosePlaybook == "install mysql"){
+                            sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${installMysqlPlaybook}"
+                        }
+                        else if (params.choosePlaybook == "install postgresql"){
+                            sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${installPostgresqlPlaybook}"
                         }
                         echo "------------ FINISH ------------"
                     }
