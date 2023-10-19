@@ -43,7 +43,6 @@ pipeline {
               when { expression { params.choosePlaybook }}
               steps {
                     script {
-                        
                         echo "------------ RUN PLAYBOOK ------------"
                         if (params.choosePlaybook == "create directory") {
                             sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${createDirectoryPlaybook}"
