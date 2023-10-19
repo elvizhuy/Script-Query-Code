@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage ('Clone or pull project') {
+        stage ('Clone or Pull Project') {
             steps {
                  script {
                     echo "------------ CLONE OR PULL CODE ------------"
