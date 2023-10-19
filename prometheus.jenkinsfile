@@ -20,7 +20,7 @@ pipeline {
                         def ProductionServer = '10.0.0.13'
                         def ProductionServerContainer = '10.0.0.14'
                         if (params.DeploymentIP == "Prometheus-Huy") {
-                            sh """ssh ${username}@${HuyPrometheus} 'cd /home/isofh/${HuyGithubDir} && git pull && docker container restart \$(docker container ls -aq --filter name=system)'"""
+                            sh """ssh ${username}@${HuyPrometheus} 'cd /home/isofh/${HuyGithubDir} && git checkout servers && sudo git pull && docker container restart \$(docker container ls -aq --filter name=system)'"""
                             // echo "-------- SSH to server ---------"
                             // sh """ssh ${username}@${HuyPrometheus} 'sudo rm -rf ${HuyGithubDir} && git clone ${gitrepo}'"""
                             // echo "----------- End ------------"
