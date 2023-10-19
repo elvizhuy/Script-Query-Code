@@ -34,6 +34,7 @@ pipeline {
                         echo "------------ CLONE PROJECT ------------"
                         echo "Git repository does not exist. Cloning..."
                         sh "git clone ${gitrepo}"
+                        sh "ls -la"
                     }
                 }
             }
