@@ -30,6 +30,7 @@ pipeline {
                         echo "Git repository exists. Pulling changes..."
                         echo "------------ PULL CODE ------------"
                         sh "cd ${workspace}/${HuyGithubDir} && git pull"
+                        sh "ls -la"
                     } else {
                         echo "------------ CLONE PROJECT ------------"
                         echo "Git repository does not exist. Cloning..."
