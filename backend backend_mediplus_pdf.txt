@@ -1,0 +1,23 @@
+backend backend_mediplus_pdf
+        mode http
+	reqrep ^([^\ ]*\ /)pdf[/]?(.*)     \1\2
+	balance roundrobin
+        option httpclose
+        option forwardfor
+        cookie JSESSIONID prefix
+                server node0 10.3.0.84:2201 cookie node0 check
+
+
+acl host_pdf_mediplus url_beg /pdf 
+        use_backend backend_mediplus_pdf if host_pdf_mediplus
+
+
+backend backend_pdf
+        mode http
+        http-request replace-uri ^/pdf/(.*) /\1
+        balance leastconn
+        option httpclose
+        option forwardfor
+        cookie JSESSIONID prefix
+        cookie backend_his insert
+                server node0 10.3.0.84:2201 cookie node0 check
