@@ -1,0 +1,22 @@
+version: "3"
+services:
+  iris-nginx:
+    container_name: nginx
+    image: nginx:1.21.6
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+      - ./auth:/etc/nginx/auth
+      - ./public:/var/www/app/public
+      - ./wp_data:/var/www/html
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NGINX_HOST=ipharma.vn
+      - NGINX_PORT=80
+networks:
+  default:
+    external:
+      name: iris
