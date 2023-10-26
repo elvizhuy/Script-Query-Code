@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage ('Clone or pull project') {
+        stage ('Clone or Pull Project') {
             steps {
                  script {
                     echo "------------ CLONE OR PULL CODE ------------"
@@ -30,10 +30,12 @@ pipeline {
                         echo "Git repository exists. Pulling changes..."
                         echo "------------ PULL CODE ------------"
                         sh "cd ${workspace}/${HuyGithubDir} && git pull"
+                        sh "ls -la"
                     } else {
                         echo "------------ CLONE PROJECT ------------"
                         echo "Git repository does not exist. Cloning..."
                         sh "git clone ${gitrepo}"
+                        sh "ls -la"
                     }
                 }
             }
@@ -43,7 +45,6 @@ pipeline {
               when { expression { params.choosePlaybook }}
               steps {
                     script {
-                        
                         echo "------------ RUN PLAYBOOK ------------"
                         if (params.choosePlaybook == "create directory") {
                             sh "cd ${HuyGithubDir} && ansible-playbook -i ${Inventory} ${createDirectoryPlaybook}"
