@@ -50,7 +50,6 @@ function show_disk_list () {
     echo "Danh sách ổ đĩa và phân vùng:"
     for item in "${drive_partitions[@]}"; do
         echo "$item"
-        if 
     done
 }
 
