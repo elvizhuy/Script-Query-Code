@@ -1,0 +1,77 @@
+if vgdisplay "$VG_NAME" &> /dev/null; then
+    VG_SIZE=$(vgdisplay -c "$VG_NAME" | cut -d ':' -f 11)
+    else
+        echo "Volume Group $VG_NAME không tồn tại."
+fi
+
+
+#!/bin/bash
+
+VG_NAME=$(vgdisplay | awk '/VG Name/ {print $3}')
+LV_PATHS=($(lvdisplay | awk '/LV Path/ {print $3}'))
+
+function get_disk_info()
+{
+    echo "================== Check thông tin ổ đĩa =================="
+    df -hT
+    echo "==========================================================="
+    lsblk
+}
+
+function begin_resolve_with_fdisk ()
+{
+    echo "======================= Xử lý với Fdisk =========================="
+    read -p "Enter Name Of Disk that needs to handle : " nameOFdisk
+    fdisk $nameOFdisk
+#chưa làm đoạn này : n p t 8e
+}
+
+function update_and_rescan_disk () {
+     partprobe -s
+}
+
+read -p "Enter Name Of Partition To Create Physical Volume: " nameOfPartitionToCreatePhysicalVolume
+
+function physical_volume_create(){
+    pvcreate /dev/$nameOfPartitionToCreatePhysicalVolume
+}
+
+function display_VG_and_entend () {
+    vgdisplay
+    if [ -n "$VG_NAME" ]; then
+    echo "Name Of Volume Group: $VG_NAME"
+    vgextend $VG_NAME /dev/$nameOfPartitionToCreatePhysicalVolume
+    else
+        echo "Volume Group $VG_NAME not existed..."
+    fi
+}
+
+function display_LV_and_check () {
+    lvdisplay
+    if ! lvdisplay /dev/"$VG_NAME"/"$LV_NAME" &> /dev/null; then
+        echo "Logical Volume not existed..."
+        exit 1
+    else
+        extend_lv
+    fi
+}
+
+function extend_lv () {
+    if [ -n "${LV_PATHS[@]}" ]; then
+        echo "List Of LV Path:"
+        for ((i=0; i<${#LV_PATHS[@]}; i++)); do
+            echo "$((i+1)). ${LV_PATHS[i]}"
+        done
+        read -p "Choose the Number related to LV Path that needs to be extended: " selectedIndex
+        if [[ $selectedIndex =~ ^[0-9]+$ && $selectedIndex -ge 1 && $selectedIndex -le ${#LV_PATHS[@]} ]]; then
+            selectedLV=${LV_PATHS[$((selectedIndex-1)]}
+            echo "You Choose LV Path: $selectedLV"
+            echo "Name of Partition that needs to handle with : "
+            read nameOfPartitionToExtend
+            read -p "Choose % Free Capacity that needs to extend: " freeVolumePercentage
+            lvextend -l +$freeVolumePercentage%FREE /dev/"$VG_NAME"/"$selectedLV" /dev/"$nameOfPartitionToExtend"
+        fi
+    else
+        echo "LV Path NOT FOUNDED!"
+    fi
+}
