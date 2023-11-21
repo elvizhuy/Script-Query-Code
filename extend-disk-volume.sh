@@ -16,7 +16,7 @@ function begin_resolve_with_fdisk ()
 {
     echo "======================= Xử lý với Fdisk =========================="
     read -p "Nhập tên ổ đĩa muốn xử lý : " nameOFdisk
-    fdisk $nameOFdisk
+    fdisk /dev/$nameOFdisk
     echo "n"
     echo "p"
 }
