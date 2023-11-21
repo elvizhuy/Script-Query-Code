@@ -10,6 +10,7 @@ function get_disk_info()
     echo "==========================================================="
     lsblk
 }
+get_disk_info
 
 function begin_resolve_with_fdisk ()
 {
@@ -19,6 +20,7 @@ function begin_resolve_with_fdisk ()
     echo "n"
     echo "p"
 }
+begin_resolve_with_fdisk
 
 function update_and_rescan_disk () {
      partprobe -s
@@ -70,10 +72,3 @@ function extend_lv () {
     fi
 }
 
-function execute_all(){
-    get_disk_info
-    begin_resolve_with_fdisk
-    
-}
-
-execute_all
