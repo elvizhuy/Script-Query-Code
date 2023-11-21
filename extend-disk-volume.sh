@@ -2,7 +2,7 @@
 
 VG_NAME=$(vgdisplay | awk '/VG Name/ {print $3}')
 LV_PATHS=($(lvdisplay | awk '/LV Path/ {print $3}'))
-
+CURRENT_DISK="";
 function get_disk_info()
 {
     echo "============================ Check thông tin ổ đĩa ==================================="
@@ -16,23 +16,50 @@ function begin_resolve_with_fdisk ()
 {
     echo "================================== Xử lý với Fdisk ====================================="
     read -p "Nhập tên ổ đĩa muốn xử lý : " nameOFdisk
-    fdisk /dev/$nameOFdisk
-    echo "n"
-    echo "p"
+    read -p "Nhập số phân vùng (ví dụ: 1-2-3): " partitionNumber
+    CURRENT_DISK="${nameOFdisk}${partitionNumber}"
+    echo "Bạn đã chọn số phân vùng: $partitionNumber"
+    echo "Biến disk có giá trị: $CURRENT_DISK"
+    
+fdisk "/dev/$nameOFdisk" <<EOF
+n
+p
+$partitionNumber
+$'\n'
+$'\n'
+t
+$partitionNumber
+8e
+w
+EOF
+
+    echo "Nhập n -> p -> chia phân vùng theo số và dung lượng -> t -> chọn phân vùng đã đánh số -> chọn loại ổ đĩa 8e ( LVM ) -> w"
+
     echo "========================================================================================"
 }
 begin_resolve_with_fdisk
 
+#rescan disk
 function update_and_rescan_disk () {
      partprobe -s
 }
 
-read -p "Nhập tên phân vùng muốn tạo physical volume: " nameOfPartitionToCreatePhysicalVolume
-
-function physical_volume_create(){
-    pvcreate /dev/$nameOfPartitionToCreatePhysicalVolume
+#lsblk expose disk / list all disk and partition in array
+function show_disk_list () {
+    mapfile -t drive_partitions < <(lsblk -o NAME -n -l)
+    echo "Danh sách ổ đĩa và phân vùng:"
+    for item in "${drive_partitions[@]}"; do
+        echo "$item"
+        if 
+    done
 }
 
+#Create Physical Volume
+function physical_volume_create(){
+    pvcreate /dev/$CURRENT_DISK
+}
+
+#Volume Group Info
 function display_VG_and_entend () {
     vgdisplay
     if [ -n "$VG_NAME" ]; then
@@ -43,6 +70,7 @@ function display_VG_and_entend () {
     fi
 }
 
+#Logical Volume Info
 function display_LV_and_check () {
     lvdisplay
     if ! lvdisplay /dev/"$VG_NAME"/"$LV_NAME" &> /dev/null; then
