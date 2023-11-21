@@ -5,20 +5,21 @@ LV_PATHS=($(lvdisplay | awk '/LV Path/ {print $3}'))
 
 function get_disk_info()
 {
-    echo "================== Check thông tin ổ đĩa =================="
+    echo "============================ Check thông tin ổ đĩa ==================================="
     df -hT
-    echo "==========================================================="
+    echo "======================================================================================"
     lsblk
 }
 get_disk_info
 
 function begin_resolve_with_fdisk ()
 {
-    echo "======================= Xử lý với Fdisk =========================="
+    echo "================================== Xử lý với Fdisk ====================================="
     read -p "Nhập tên ổ đĩa muốn xử lý : " nameOFdisk
     fdisk /dev/$nameOFdisk
     echo "n"
     echo "p"
+    echo "========================================================================================"
 }
 begin_resolve_with_fdisk
 
