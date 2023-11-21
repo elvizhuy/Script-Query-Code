@@ -16,7 +16,8 @@ function begin_resolve_with_fdisk ()
     echo "======================= Xử lý với Fdisk =========================="
     read -p "Nhập tên ổ đĩa muốn xử lý : " nameOFdisk
     fdisk $nameOFdisk
-#chưa làm đoạn này : n p t 8e
+    echo "n"
+    echo "p"
 }
 
 function update_and_rescan_disk () {
@@ -65,6 +66,14 @@ function extend_lv () {
             lvextend -l +$freeVolumePercentage%FREE /dev/"$VG_NAME"/"$selectedLV" /dev/"$nameOfPartitionToExtend"
         fi
     else
-        echo "LV Path NOT FOUNDED!"
+        echo "LV Path không tìm thấy!"
     fi
 }
+
+function execute_all(){
+    get_disk_info
+    begin_resolve_with_fdisk
+    
+}
+
+execute_all
