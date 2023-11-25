@@ -5,6 +5,7 @@ services:
   mongo:
     image: mongo
     restart: always
+    container_name: mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Huynn@9890#!
@@ -12,6 +13,7 @@ services:
   mongo-express:
     image: mongo-express
     restart: always
+    container_name: mongo-express
     ports:
       - 2888:2888
     environment:
