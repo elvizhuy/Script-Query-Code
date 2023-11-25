@@ -9,7 +9,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Huynn@9890#!
-
+    ports:
+      - 27017:27017
+    volumes:
+      - ./home/huynn/data/mongo:/data/db
   mongo-express:
     image: mongo-express
     restart: always
