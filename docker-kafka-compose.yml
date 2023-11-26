@@ -3,7 +3,7 @@ version: '3'
 services:
   zookeeper-kafka:
     # image: confluentinc/cp-zookeeper:latest
-    image: nguyenngochuy/zookeeper:latest
+    image: nguyenngochuy/zookeeper
 
     container_name: zookeeper-isofh
     ports:
@@ -19,7 +19,7 @@ services:
 
   kafka:
     # image: wurstmeister/kafka:latest
-    image: nguyenngochuy/kafka:latest
+    image: nguyenngochuy/kafka
 
     restart: always
     container_name: kafka-isofh
@@ -54,7 +54,7 @@ services:
   kafka-ui:
     container_name: kafka-ui-isofh
     # image: provectuslabs/kafka-ui:latest
-    image: nguyenngochuy/kafka-ui:latest
+    image: nguyenngochuy/kafka-ui
 
     ports:
       - "18080:8080"
