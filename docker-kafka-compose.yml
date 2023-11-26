@@ -2,7 +2,9 @@ version: '3'
 
 services:
   zookeeper-kafka:
-    image: confluentinc/cp-zookeeper:latest
+    # image: confluentinc/cp-zookeeper:latest
+    image: nguyenngochuy/zookeeper:latest
+
     container_name: zookeeper-isofh
     ports:
       - '2181:2181'
@@ -16,7 +18,9 @@ services:
       retries: 5
 
   kafka:
-    image: wurstmeister/kafka:latest
+    # image: wurstmeister/kafka:latest
+    image: nguyenngochuy/kafka:latest
+
     restart: always
     container_name: kafka-isofh
     depends_on:
@@ -49,7 +53,9 @@ services:
 
   kafka-ui:
     container_name: kafka-ui-isofh
-    image: provectuslabs/kafka-ui:latest
+    # image: provectuslabs/kafka-ui:latest
+    image: nguyenngochuy/kafka-ui:latest
+
     ports:
       - "18080:8080"
     depends_on:
