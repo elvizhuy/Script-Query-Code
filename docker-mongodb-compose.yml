@@ -15,13 +15,13 @@ services:
       - "27017:27017"
     volumes:
       - /home/isofh/data/mongo:/data/db
-  mongo-express:
-    image: mongo-express:latest
-    restart: always
-    container_name: mongo-express
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: AdMiN@2023!*SysTeM#*
-      ME_CONFIG_MONGODB_URL: mongodb://root:AdMiN@2023!*SysTeM#*@mongo:27017/
+  # mongo-express:
+  #   image: mongo-express:latest
+  #   restart: always
+  #   container_name: mongo-express
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: AdMiN@2023!#*SysTeM
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:AdMiN@2023!#*SysTeM@mongo:27017/
