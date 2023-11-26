@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: "AdMiN@2023#SysTeM"
       MONGO_INITDB_DATABASE: admin
-    command: --config /etc/mongod.conf
+    # command: --config /etc/mongod.conf
     ports:
       - "27017:27017"
     volumes:
