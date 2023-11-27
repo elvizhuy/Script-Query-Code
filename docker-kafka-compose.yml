@@ -1,21 +1,21 @@
 version: '3'
 
 services:
-  # zookeeper-kafka:
-  #   # image: confluentinc/cp-zookeeper:latest
-  #   image: nguyenngochuy/zookeeper
+  zookeeper-kafka:
+    # image: confluentinc/cp-zookeeper:latest
+    image: nguyenngochuy/zookeeper
 
-  #   container_name: zookeeper-isofh
-  #   ports:
-  #     - '2181:2181'
-  #   environment:
-  #     ZOOKEEPER_CLIENT_PORT: 2181
-  #     ZOOKEEPER_TICK_TIME: 2000
-  #   healthcheck:
-  #     test: ['CMD', 'date']
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+    container_name: zookeeper-isofh
+    ports:
+      - '2181:2181'
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: ['CMD', 'date']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     # image: wurstmeister/kafka:latest
@@ -51,21 +51,21 @@ services:
       timeout: 5s
       retries: 5
 
-  # kafka-ui:
-  #   container_name: kafka-ui-isofh
-  #   # image: provectuslabs/kafka-ui:latest
-  #   image: nguyenngochuy/kafka-ui
+  kafka-ui:
+    container_name: kafka-ui-isofh
+    # image: provectuslabs/kafka-ui:latest
+    image: nguyenngochuy/kafka-ui
 
-  #   ports:
-  #     - "18080:8080"
-  #   depends_on:
-  #     - zookeeper-kafka
-  #     - kafka
-  #   environment:
-  #     AUTH_TYPE: "LOGIN_FORM"
-  #     SPRING_SECURITY_USER_NAME: admin
-  #     SPRING_SECURITY_USER_PASSWORD: AbCd@9876#1234
-  #     KAFKA_CLUSTERS_0_NAME: local
-  #     KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:39092
-  #     KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-kafka:2181
-  #     KAFKA_CLUSTERS_0_JMXPORT: 9997
+    ports:
+      - "18080:8080"
+    depends_on:
+      - zookeeper-kafka
+      - kafka
+    environment:
+      AUTH_TYPE: "LOGIN_FORM"
+      SPRING_SECURITY_USER_NAME: admin
+      SPRING_SECURITY_USER_PASSWORD: AbCd@9876#1234
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:39092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-kafka:2181
+      KAFKA_CLUSTERS_0_JMXPORT: 9997
