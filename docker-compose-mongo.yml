@@ -8,7 +8,7 @@ services:
     volumes:
       - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf:ro"
       - "/home/isofh/server/mongodb/mongo-data:/data/db"
-      - "log:/var/log/mongodb"
+      - "/home/isofh/server/mongodb/log:/var/log/mongodb"
     command: ["/usr/bin/mongod", "-f", "/data/configdb/mongod.conf"]
     restart: always
 volumes:
