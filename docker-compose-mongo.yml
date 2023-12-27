@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo-db-rasa
+    ports:
+      - "27017:27017"
+    volumes:
+      - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf:ro"
+      - "/home/isofh/server/mongodb/mongo-data:/data/db"
+      - "log:/var/log/mongodb"
+    command: ["/usr/bin/mongod", "-f", "/data/configdb/mongod.conf"]
+    restart: always
+volumes:
+  log: null
