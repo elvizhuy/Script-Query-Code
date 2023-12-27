@@ -9,12 +9,12 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ivirse
       MONGO_INITDB_ROOT_PASSWORD: ivirse@u7XZI=7P6jXZ
     volumes:
-      # - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf:ro"
+      - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf:ro"
       # - "/home/isofh/server/mongodb/data:/data/db"
-      # - "/home/isofh/server/mongodb/log:/var/log/mongodb"
-      - "./config/mongod.conf:/data/configdb/mongod.conf:ro"
+      - "/home/isofh/server/mongodb/log:/var/log/mongodb"
+      # - "./config/mongod.conf:/data/configdb/mongod.conf:ro"
       - "/home/isofh/server/mongodb/data:/data/db"
-      - "log:/var/log/mongodb"
+      # - "log:/var/log/mongodb"
     command: ["/usr/bin/mongod", "-f", "/data/configdb/mongod.conf"]
     restart: always
 volumes:
