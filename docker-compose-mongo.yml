@@ -15,7 +15,6 @@ services:
       # - "./config/mongod.conf:/data/configdb/mongod.conf:ro"
       - "/home/isofh/server/mongodb/data:/data/db"
       # - "log:/var/log/mongodb"
-    command: ["/usr/bin/mongod", "-f", "/data/configdb/mongod.conf"]
     restart: always
 volumes:
   log: null
