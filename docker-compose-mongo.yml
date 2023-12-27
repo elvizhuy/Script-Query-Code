@@ -5,6 +5,9 @@ services:
     container_name: mongo-db-rasa
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: AdmIn@*2023!#IvIrsE
     volumes:
       - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf:ro"
       - "/home/isofh/server/mongodb/data:/data/db"
