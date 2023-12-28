@@ -18,3 +18,29 @@ services:
     restart: always
 volumes:
   log: null
+
+#user+pass: 
+# - sysdba  /  AdMiN#2023*!SySTeM
+# - rasa1 / IvI#R@sA!2023*
+
+# db.createUser(
+#   {
+#     user: "rasa1",
+#     pwd: "IvI#R@sA!2023*",
+#     roles: [
+#       { role: "readWrite", db: "rasachatbot" }
+#     ]
+#   }
+# )
+
+# use admin
+# db.createUser(
+#   {
+#     user: "adminUser",
+#     pwd: "adminPassword",
+#     roles: [
+#       { role: "userAdminAnyDatabase", db: "admin" },
+#       { role: "readWrite", db: "rasachatbot" }
+#     ]
+#   }
+# )
