@@ -1,7 +1,7 @@
 version: "3"
 services:
   iris-nginx:
-    container_name: nginx
+    container_name: ivirse-nginx
     image: nginx:1.25.3-alpine
     volumes:
       - ./templates:/etc/nginx/templates
