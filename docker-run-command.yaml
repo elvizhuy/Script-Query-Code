@@ -1,0 +1,5 @@
+
+#mongo
+docker run --restart always -e MONGO_INITDB_ROOT_USERNAME=ivirse -e MONGO_INITDB_ROOT_PASSWORD=ivirse@u7XZI=7P6jXZ --name mongo -p 27017:27017 -v $HOME/mongo:/data/db -d mongo:6.0.5
+
+#nginx

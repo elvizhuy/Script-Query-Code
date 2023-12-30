@@ -14,9 +14,9 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - NGINX_HOST=ipharma.vn
+      - NGINX_HOST=ivirse.io
       - NGINX_PORT=80
-networks:
-  default:
-    external:
-      name: iris
+# networks:
+#   default:
+#     external:
+#       name: ivirse
