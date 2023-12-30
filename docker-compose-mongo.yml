@@ -1,27 +1,43 @@
-version: "3.9"
+# version: "3.9"
+# services:
+#   mongodb:
+#     image: mongo:6.0.5
+#     container_name: mongo-rasa
+#     ports:
+#       - "27017:27017"
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: ivirse
+#       MONGO_INITDB_ROOT_PASSWORD: ivirse@u7XZI=7P6jXZ
+#     volumes:
+#       - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf"
+#       # - "/home/isofh/server/mongodb/data:/data/db"
+#       - "/home/isofh/server/mongodb/log:/var/log/mongodb"
+#       # - "./config/mongod.conf:/data/configdb/mongod.conf:ro"
+#       - "/home/isofh/server/mongodb/data:/data/db"
+#       # - "log:/var/log/mongodb"
+#     restart: always
+# volumes:
+#   log: null
+
+version: '3.9'
+
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongo-db-rasa
+  mongo:
+    image: mongo:6.0.5
+    container_name: mongo-rasa
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ivirse
       MONGO_INITDB_ROOT_PASSWORD: ivirse@u7XZI=7P6jXZ
     volumes:
-      - "/home/isofh/server/mongodb/config/mongod.conf:/data/configdb/mongod.conf"
-      # - "/home/isofh/server/mongodb/data:/data/db"
-      - "/home/isofh/server/mongodb/log:/var/log/mongodb"
-      # - "./config/mongod.conf:/data/configdb/mongod.conf:ro"
-      - "/home/isofh/server/mongodb/data:/data/db"
-      # - "log:/var/log/mongodb"
-    restart: always
-volumes:
-  log: null
+      - /home/isofh/server/mongodb/data:/data/db
 
 #user+pass: 
 # - sysdba  /  AdMiN#2023*!SySTeM
 # - rasa1 / IvI#R@sA!2023*
+
+#db.auth("ivirse","ivirse@u7XZI=7P6jXZ")
 
 # db.createUser(
 #   {
@@ -44,3 +60,5 @@ volumes:
 #     ]
 #   }
 # )
+
+# docker run --name mongo -v /home/isofh/server/mongodb/config:/data/configdb -v /home/isofh/server/mongodb/data:/data/db -v /home/isofh/server/mongodb/log:/var/log/mongodb -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=ivirse -e MONGO_INITDB_ROOT_PASSWORD=ivirse@u7XZI=7P6jXZ mongo:6.0.5 --config /etc/mongo/mongod.conf
