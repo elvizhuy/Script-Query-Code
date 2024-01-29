@@ -44,7 +44,7 @@ services:
 #     user: "rasa1",
 #     pwd: "IvI#R@sA!2023*",
 #     roles: [
-#       { role: "readWrite", db: "rasachatbot" }
+#       { role: "readWrite", db: "rasadb" }
 #     ]
 #   }
 # )
