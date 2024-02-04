@@ -36,21 +36,28 @@ function KeyRing ()
 }
 KeyRing
 
-function install Containerd () 
+function install_containerd () 
 {
     apt-get update && apt-get install containerd.io -y
     containerd config default | tee /etc/containerd/config.toml
     sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
     systemctl restart containerd
 }
-install Containerd
+install_containerd
 
-touch /etc/apt/sources.list.d/kubernetes.list
-echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >> /etc/apt/sources.list.d/kubernetes.list
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-apt-get update
-apt-get install -y kubeadm=1.27.1-00 kubelet=1.27.1-00 kubectl=1.27.1-00
-apt-mark hold kubelet kubeadm kubectl
+function install_kubeadm ()
+{
+    if dpkg -l | grep -E '^ii' | grep -q 'kubeadm'; then
+        echo "Kubeadm đã được cài đặt. Bỏ qua bước cài đặt."
+        return 0
+    fi
+    sudo sh -c 'echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list'
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    sudo apt-get update
+    sudo apt-get install -y kubeadm=1.27.1-00 kubelet=1.27.1-00 kubectl=1.27.1-00
+    sudo apt-mark hold kubelet kubeadm kubectl
+}
+install_kubeadm
 
 # function createKubeConfigFile ()
 # {
