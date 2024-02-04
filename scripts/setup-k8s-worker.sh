@@ -21,18 +21,28 @@ sysctl --system
 function KeyRing ()
 {
     KEYRING_DIR="/etc/apt/keyrings"
+    KEYRING_GPG="$KEYRING_DIR/docker.gpg"
     if [ ! -d "$KEYRING_DIR" ]; then
         sudo mkdir -p "$KEYRING_DIR"
-
-        # Tải và cài đặt khóa GPG
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o "$KEYRING_DIR/docker.gpg"
-
-        # Thêm nguồn cho APT
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING_DIR/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        echo "Đã tạo thư mục và cài đặt khóa GPG thành công."
+        if [ ! -f "$KEYRING_DIR/docker.gpg" ]; then
+            # Tải và cài đặt khóa GPG
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o "$KEYRING_DIR/docker.gpg"
+            echo "Đã tạo thư mục và cài đặt khóa GPG thành công."
+        else
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | yes | sudo gpg --dearmor -o "$KEYRING_DIR/docker.gpg"
+        fi
     else
         echo "Thư mục $KEYRING_DIR đã tồn tại. Bỏ qua bước tạo thư mục và cài đặt khóa GPG."
+        if [ ! -f "$KEYRING_DIR/docker.gpg" ]; then
+            # Tải và cài đặt khóa GPG
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o "$KEYRING_DIR/docker.gpg"
+            echo "Đã tạo thư mục và cài đặt khóa GPG thành công."
+        else
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | yes | sudo gpg --dearmor -o "$KEYRING_DIR/docker.gpg"
+        fi
     fi
+    # Thêm nguồn cho APT
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING_DIR/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 }
 KeyRing
 
