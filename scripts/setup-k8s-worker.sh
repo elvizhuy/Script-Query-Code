@@ -20,14 +20,19 @@ sysctl --system
 
 function KeyRing ()
 {
-    sudo mkdir-p /etc/apt/keyrings
-    curl-fsSL https://download.docker.com/linux/ubuntu/gpg \
-    | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    KEYRING_DIR="/etc/apt/keyrings"
+    if [ ! -d "$KEYRING_DIR" ]; then
+        sudo mkdir -p "$KEYRING_DIR"
 
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-    https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        # Tải và cài đặt khóa GPG
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o "$KEYRING_DIR/docker.gpg"
+
+        # Thêm nguồn cho APT
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING_DIR/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        echo "Đã tạo thư mục và cài đặt khóa GPG thành công."
+    else
+        echo "Thư mục $KEYRING_DIR đã tồn tại. Bỏ qua bước tạo thư mục và cài đặt khóa GPG."
+    fi
 }
 KeyRing
 
@@ -42,22 +47,57 @@ install Containerd
 
 touch /etc/apt/sources.list.d/kubernetes.list
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >> /etc/apt/sources.list.d/kubernetes.list
-curl -s \
-https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-| apt-key add -
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 apt-get update
 apt-get install -y kubeadm=1.27.1-00 kubelet=1.27.1-00 kubectl=1.27.1-00
 apt-mark hold kubelet kubeadm kubectl
 
-function createKubeConfigFile ()
-{
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-kubernetesVersion: 1.27.1
-controlPlaneEndpoint: "k8s-master.huynn.local:6443"
-networking:
-    podSubnet: 192.168.0.0/16
-}
+# function createKubeConfigFile ()
+# {
+# cat <<EOF > kubeadm-config.yaml
+# apiVersion: kubeadm.k8s.io/v1beta3
+# kind: ClusterConfiguration
+# kubernetesVersion: 1.27.1
+# controlPlaneEndpoint: "k8s-master.huynn.local:6443"
+# networking:
+#   podSubnet: 192.168.0.0/16
+# EOF
+# }
+# createKubeConfigFile
+
+# if [ -f "kubeadm-config.yaml" ]; then
+#     echo "File kubeadm-config.yaml đã được tạo thành công."
+# else
+#     echo "Có lỗi xảy ra khi tạo file kubeadm-config.yaml."
+# fi
+
+# kubeadm init --config=kubeadm-config.yaml --upload-certs | tee kubeadm-init.out
+
+# function setup_kubeconfig() {
+#     KUBE_DIR=$HOME/.kube
+
+#     # Kiểm tra xem thư mục ~/.kube đã tồn tại chưa
+#     if [ ! -d "$KUBE_DIR" ]; then
+#         # Nếu không tồn tại, tạo thư mục
+#         mkdir -p $KUBE_DIR
+        
+#         # Sao chép file cấu hình admin.conf vào ~/.kube/config
+#         sudo cp -i /etc/kubernetes/admin.conf $KUBE_DIR/config
+        
+#         # Cấp quyền sở hữu cho người dùng hiện tại cho file config
+#         sudo chown $(id -u):$(id -g) $KUBE_DIR/config
+        
+#         # Hiển thị nội dung của file config
+#         # less $KUBE_DIR/config
+
+#         echo "Đã cài đặt và cấu hình thành công."
+#     else
+#         echo "Thư mục $KUBE_DIR đã tồn tại. Bỏ qua bước cài đặt."
+#     fi
+# }
+# setup_kubeconfig
+
+
 
 
 
