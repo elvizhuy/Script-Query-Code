@@ -7,6 +7,7 @@ apt install curl apt-transport-https vim git wget \
 software-properties-common lsb-release ca-certificates -y
 
 swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 modprobe overlay
 modprobe br_netfilter
 
@@ -65,6 +66,10 @@ function install_kubeadm ()
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
     sudo apt-get update
     sudo apt-get install -y kubeadm=1.27.1-00 kubelet=1.27.1-00 kubectl=1.27.1-00
+    systemctl daemon-reload
+    systemctl enable kubelet
+    systemctl restart kubelet
+    systemctl status kubelet
     sudo apt-mark hold kubelet kubeadm kubectl
 }
 install_kubeadm
