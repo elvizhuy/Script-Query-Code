@@ -77,6 +77,13 @@ EOF
 }
 install_docker
 
+function install_nfs_client ()
+{
+    sudo apt-get update
+    sudo apt-get install nfs-common -y
+}
+install_nfs_client
+
 function install_kubeadm ()
 {
     if dpkg -l | grep -E '^ii' | grep -q 'kubeadm'; then
