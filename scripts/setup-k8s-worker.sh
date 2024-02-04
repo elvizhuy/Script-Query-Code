@@ -58,7 +58,7 @@ KeyRing
 function install_docker ()
 {
     apt-get update
-    apt install docker.io
+    apt install docker.io -y
     systemctl start docker
     cat << EOF | sudo tee /etc/docker/daemon.json
     {
