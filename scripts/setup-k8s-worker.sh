@@ -47,14 +47,35 @@ function KeyRing ()
 }
 KeyRing
 
-function install_containerd () 
+# function install_containerd () 
+# {
+#     apt-get update && apt-get install containerd.io -y
+#     containerd config default | tee /etc/containerd/config.toml
+#     sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+#     systemctl restart containerd
+# }
+# install_containerd
+function install_docker ()
 {
-    apt-get update && apt-get install containerd.io -y
-    containerd config default | tee /etc/containerd/config.toml
-    sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
-    systemctl restart containerd
+    apt-get update
+    apt install docker.io
+    systemctl start docker
+    cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
 }
-install_containerd
+EOF
+    systemctl daemon-reload
+    systemctl enable docker
+    systemctl restart docker
+    systemctl status docker
+}
+install_docker
 
 function install_kubeadm ()
 {
