@@ -52,11 +52,11 @@ services:
 # use admin
 # db.createUser(
 #   {
-#     user: "adminUser",
-#     pwd: "adminPassword",
+#     user: "sysdba",
+#     pwd: "AdMiN#2023*!SySTeM",
 #     roles: [
 #       { role: "userAdminAnyDatabase", db: "admin" },
-#       { role: "readWrite", db: "rasachatbot" }
+#       { role: "readWrite", db: "rasadb" }
 #     ]
 #   }
 # )
