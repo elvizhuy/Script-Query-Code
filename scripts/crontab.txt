@@ -1,0 +1,18 @@
+*/3 * * * * sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"
+00 22 * * sun sudo sh /home/isofh/reboot.sh
+03 22 * * sun docker start $(docker container ls -q -f "status=exited")
+05 22 * * sun sudo sh /home/isofh/check_status_docker.sh
+07 22 * * sun docker start $(docker container ls -q -f "status=exited")
+10 22 * * sun sudo sh /home/isofh/check_status_docker.sh
+
+
+0 0 * * * sync; echo 1 > /proc/sys/vm/drop_caches
+@reboot docker start $(docker container ls -q -f "status=exited")
+0 23 * * * sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"
+0 12 * * * sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"
+30 23 * * * mv /home/isofh/server/emr/ndtp-production/his/log/*.gz /home/isofh/server/emr/ndtp-production/his/log/log
+45 23 * * * mv /home/isofh/server/emr/ndtp-production/his/log-2529/*.gz /home/isofh/server/emr/ndtp-production/his/log-2529/log
+00 22 * * * bash /home/isofh/server/script/rsync_app_files.sh
+
+
+
