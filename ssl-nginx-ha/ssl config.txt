@@ -1,0 +1,6 @@
+ssl_certificate /etc/nginx/vhosts/cert/cert_wildcard_vnpaytest.cer;
+ssl_certificate_key /etc/nginx/vhosts/cert/cert_wildcard_vnpaytest.key;
+ssl_dhparam /etc/nginx/vhosts/cert/dhparam.pem;
+ssl_trusted_certificate /etc/nginx/vhosts/cert/cert_wildcard_vnpaytest.pem;
+    ssl_certificate /etc/nginx/ssl/hust.edu.vn/HUST230426208431.cer;
+    ssl_certificate_key /etc/nginx/ssl/hust.edu.vn/hust.edu.vn.key;
